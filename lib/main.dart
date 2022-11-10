@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:resto_app/detail_resto.dart';
 import 'package:resto_app/restaurant.dart';
 
 import 'article.dart';
@@ -21,6 +22,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(),
+      initialRoute: MyHomePage.routeName,
+      routes: {
+        DetailResto.routeName: (context) => DetailResto(
+              restaurantModel:
+                  ModalRoute.of(context)?.settings.arguments as RestaurantModel,
+            )
+      },
     );
   }
 }
@@ -28,6 +36,7 @@ class MyApp extends StatelessWidget {
 RestaurantModel? convertResto;
 
 class MyHomePage extends StatelessWidget {
+  static const routeName = '/';
   const MyHomePage({super.key});
 
   @override
@@ -48,8 +57,16 @@ class MyHomePage extends StatelessWidget {
               future: DefaultAssetBundle.of(context)
                   .loadString('assets/local_restaurant.json'),
               builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Column(
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: [
+                      const CircularProgressIndicator(),
+                      const Text("Sabar itu sebagian dari iman >,<")
+                    ],
+                  );
+                }
                 convertResto = restaurantModelFromJson(snapshot.data);
-                // print("hasil: ${convertResto!.restaurants[0].city}");
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -59,6 +76,7 @@ class MyHomePage extends StatelessWidget {
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
                       index: index,
+                      restoModel: convertResto,
                     );
                   },
                 );
@@ -102,90 +120,98 @@ class WidgetCardFood extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
   final int index;
+  final RestaurantModel? restoModel;
   const WidgetCardFood(
       {Key? key,
       required this.screenWidth,
       required this.screenHeight,
-      required this.index})
+      required this.index,
+      required this.restoModel})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          color: Colors.amber,
-          width: screenWidth / 2,
-          height: screenHeight * .1517,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(16)),
-            child: Image.network(
-              "https://restaurant-api.dicoding.dev/images/medium/22",
-              fit: BoxFit.fill,
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, DetailResto.routeName,
+            arguments: restoModel);
+      },
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            color: Colors.amber,
+            width: screenWidth / 2,
+            height: screenHeight * .1517,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
+              child: Image.network(
+                "${restoModel?.restaurants[index].pictureId}",
+                fit: BoxFit.fill,
+              ),
             ),
           ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(10),
-          width: (screenWidth / 2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                color: Colors.black12,
-                width: screenWidth / 2,
-                height: screenHeight * .0505,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "${convertResto?.restaurants[index].name}",
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
+          Container(
+            padding: const EdgeInsets.all(10),
+            width: (screenWidth / 2),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  color: Colors.black12,
+                  width: screenWidth / 2,
+                  height: screenHeight * .0505,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "${restoModel?.restaurants[index].name}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                color: Colors.black26,
-                width: screenWidth / 2,
-                height: screenHeight * .0505,
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.location_pin,
-                        ),
-                        Text(
-                          "${convertResto?.restaurants[index].city}",
-                        )
-                      ],
-                    )),
-              ),
-              Container(
-                color: Colors.black26,
-                width: screenWidth / 2,
-                height: screenHeight * .0505,
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.star_rounded,
-                        ),
-                        Text(
-                          "${convertResto?.restaurants[index].rating}",
-                        )
-                      ],
-                    )),
-              ),
-            ],
-          ),
-        )
-      ],
+                Container(
+                  color: Colors.black26,
+                  width: screenWidth / 2,
+                  height: screenHeight * .0505,
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_pin,
+                          ),
+                          Text(
+                            "${restoModel?.restaurants[index].city}",
+                          )
+                        ],
+                      )),
+                ),
+                Container(
+                  color: Colors.black26,
+                  width: screenWidth / 2,
+                  height: screenHeight * .0505,
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                          ),
+                          Text(
+                            "${restoModel?.restaurants[index].rating}",
+                          )
+                        ],
+                      )),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
