@@ -10,6 +10,13 @@ void main() {
   runApp(const MyApp());
 }
 
+class DetailRestoArguments {
+  final RestaurantModel? restoModel;
+  final int index;
+
+  DetailRestoArguments(this.restoModel, this.index);
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -23,12 +30,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(),
       initialRoute: MyHomePage.routeName,
-      routes: {
-        DetailResto.routeName: (context) => DetailResto(
-              restaurantModel:
-                  ModalRoute.of(context)?.settings.arguments as RestaurantModel,
-            )
-      },
+      routes: {DetailResto.routeName: (context) => const DetailResto()},
     );
   }
 }
@@ -134,7 +136,7 @@ class WidgetCardFood extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, DetailResto.routeName,
-            arguments: restoModel);
+            arguments: DetailRestoArguments(restoModel, index));
       },
       child: Row(
         children: [
