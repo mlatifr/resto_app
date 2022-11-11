@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:resto_app/detail_resto.dart';
 import 'package:resto_app/restaurant.dart';
-
-import 'article.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,10 +57,9 @@ class MyHomePage extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Column(
-                    // ignore: prefer_const_literals_to_create_immutables
-                    children: [
-                      const CircularProgressIndicator(),
-                      const Text("Sabar itu sebagian dari iman >,<")
+                    children: const [
+                      CircularProgressIndicator(),
+                      Text("Sabar itu sebagian dari iman >,<")
                     ],
                   );
                 }
@@ -105,8 +100,7 @@ class WidgetJudulHalaman extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.redAccent,
+    return SizedBox(
       width: _screenWidth,
       height: _screenHeight * .08,
       child: const Center(
@@ -141,8 +135,7 @@ class WidgetCardFood extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
-            color: Colors.amber,
+            padding: const EdgeInsets.all(5),
             width: screenWidth / 2,
             height: screenHeight * .1517,
             child: ClipRRect(
@@ -161,7 +154,7 @@ class WidgetCardFood extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  color: Colors.black12,
+                  color: Colors.lightBlueAccent,
                   width: screenWidth / 2,
                   height: screenHeight * .0505,
                   child: Align(
@@ -175,8 +168,7 @@ class WidgetCardFood extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  color: Colors.black26,
+                SizedBox(
                   width: screenWidth / 2,
                   height: screenHeight * .0505,
                   child: Align(
@@ -192,8 +184,7 @@ class WidgetCardFood extends StatelessWidget {
                         ],
                       )),
                 ),
-                Container(
-                  color: Colors.black26,
+                SizedBox(
                   width: screenWidth / 2,
                   height: screenHeight * .0505,
                   child: Align(
