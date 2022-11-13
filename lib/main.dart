@@ -58,14 +58,31 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _futureResto = ApiService().getListResto().then((value) {
       listResto = value.restaurants;
+      if (value.toString().contains("Failed")) {
+        listResto.clear();
+      }
       return value;
     });
+  }
+
+  bool isLoading = false;
+  setIsLoading(bool status) {
+    if (status) {
+      setState(() {
+        isLoading = true;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -97,23 +114,39 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        // print("${_cariRestoTextController.text}");
+                        setIsLoading(true);
                         if (_cariRestoTextController.text.isEmpty) {
                           ApiService().getListResto().then((value) {
-                            setState(() {
-                              listResto = value.restaurants;
-                            });
+                            setIsLoading(false);
+                            try {
+                              setState(() {
+                                if (value.toString().contains("Failed")) {
+                                  listResto.clear();
+                                } else {
+                                  listResto = value.restaurants;
+                                }
+                              });
+                            } catch (e) {
+                              return e;
+                            }
                           });
                         } else {
                           ApiService()
                               .getListRestoQuery(_cariRestoTextController.text)
                               .then((value) {
-                            setState(() {
-                              listResto = value.restaurants;
-                              if (value.restaurants.isEmpty) {
-                                listResto.clear();
-                              }
-                            });
+                            setIsLoading(false);
+                            try {
+                              setState(() {
+                                if (value.restaurants.isEmpty ||
+                                    value.toString().contains("Failed")) {
+                                  listResto.clear();
+                                } else {
+                                  listResto = value.restaurants;
+                                }
+                              });
+                            } catch (e) {
+                              return e;
+                            }
                           });
                         }
                       },
@@ -122,47 +155,64 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             const Divider(),
-            FutureBuilder<RestoListModel>(
-              future: _futureResto,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Column(
-                    children: const [
-                      CircularProgressIndicator(),
-                      Text(
-                          "Tenang aja, data sedang dikirim\npastikan internet kamu tersambung")
-                    ],
-                  );
-                }
-                if (listResto.isEmpty) {
-                  return Container(
-                    padding: const EdgeInsets.all(20),
-                    child: const Center(
-                      child: Text(
-                        "Mohon maaf\nResto atau menu yang anda cari belum tersedia\nKamu bisa kosongkan text pencarian\nKemudian klik icon cari untuk melihat semua list resto ^_^",
-                        textAlign: TextAlign.center,
+            if (isLoading) const WidgetLoading(),
+            if (isLoading == false)
+              FutureBuilder<RestoListModel>(
+                future: _futureResto,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting ||
+                      isLoading == true) {
+                    return const WidgetLoading();
+                  }
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    isLoading = false;
+                  }
+                  if (listResto.isEmpty) {
+                    return Container(
+                      padding: const EdgeInsets.all(20),
+                      child: const Center(
+                        child: Text(
+                          "Mohon maaf\nResto atau menu yang anda cari belum tersedia\n1. Pastikan koneksi internetmu aman\n2.Kamu bisa kosongkan text pencarian\n3.Kemudian klik icon cari untuk melihat semua list resto ^_^",
+                          textAlign: TextAlign.justify,
+                        ),
                       ),
-                    ),
-                  );
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: listResto.length,
-                  itemBuilder: (context, index) {
-                    return WidgetCardFood(
-                      screenWidth: screenWidth,
-                      screenHeight: screenHeight,
-                      index: index,
-                      resto: listResto[index],
                     );
-                  },
-                );
-              },
-            ),
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: listResto.length,
+                    itemBuilder: (context, index) {
+                      return WidgetCardFood(
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight,
+                        index: index,
+                        resto: listResto[index],
+                      );
+                    },
+                  );
+                },
+              ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class WidgetLoading extends StatelessWidget {
+  const WidgetLoading({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        CircularProgressIndicator(),
+        Text(
+            "Tenang aja, data sedang dikirim\npastikan internet kamu tersambung")
+      ],
     );
   }
 }

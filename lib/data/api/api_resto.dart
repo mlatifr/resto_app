@@ -3,16 +3,24 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String _baseUrl = 'https://restaurant-api.dicoding.dev/list';
-  Future<RestoListModel> getListResto() async {
-    final response = await http.get(Uri.parse(_baseUrl));
-    RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
-    return decodeRestoStatus;
+  Future getListResto() async {
+    try {
+      final response = await http.get(Uri.parse(_baseUrl));
+      RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
+      return decodeRestoStatus;
+    } catch (e) {
+      return e;
+    }
   }
 
-  Future<RestoListModel> getListRestoQuery(query) async {
-    final response = await http
-        .get(Uri.parse("https://restaurant-api.dicoding.dev/search?q=$query"));
-    RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
-    return decodeRestoStatus;
+  Future getListRestoQuery(query) async {
+    try {
+      final response = await http.get(
+          Uri.parse("https://restaurant-api.dicoding.dev/search?q=$query"));
+      RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
+      return decodeRestoStatus;
+    } catch (e) {
+      return e;
+    }
   }
 }
