@@ -99,7 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         // print("${_cariRestoTextController.text}");
                         ApiService()
                             .getListRestoQuery(_cariRestoTextController.text)
-                            .then((value) => print(value.restaurants[0].name));
+                            .then((value) {
+                          setState(() {
+                            listResto = value.restaurants;
+                          });
+                        });
                       },
                       child: const Icon(Icons.search))
                 ],
