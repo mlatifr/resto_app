@@ -76,8 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             WidgetJudulHalaman(
                 screenWidth: screenWidth, screenHeight: screenHeight),
+            const Divider(),
             Container(
-              color: Colors.blueAccent,
+              // color: Colors.blueAccent,
               width: screenWidth,
               height: screenHeight * .07,
               padding: const EdgeInsets.all(5),
@@ -87,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: TextField(
                     controller: _cariRestoTextController,
                     decoration: InputDecoration(
-                        hintText: "Cari Resto",
+                        hintText: "Cari Resto atau Menu",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15))),
                   )),
@@ -97,18 +98,30 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                       onPressed: () {
                         // print("${_cariRestoTextController.text}");
-                        ApiService()
-                            .getListRestoQuery(_cariRestoTextController.text)
-                            .then((value) {
-                          setState(() {
-                            listResto = value.restaurants;
+                        if (_cariRestoTextController.text.isEmpty) {
+                          ApiService().getListResto().then((value) {
+                            setState(() {
+                              listResto = value.restaurants;
+                            });
                           });
-                        });
+                        } else {
+                          ApiService()
+                              .getListRestoQuery(_cariRestoTextController.text)
+                              .then((value) {
+                            setState(() {
+                              listResto = value.restaurants;
+                              if (value.restaurants.isEmpty) {
+                                listResto.clear();
+                              }
+                            });
+                          });
+                        }
                       },
                       child: const Icon(Icons.search))
                 ],
               ),
             ),
+            const Divider(),
             FutureBuilder<RestoListModel>(
               future: _futureResto,
               builder: (context, snapshot) {
@@ -116,8 +129,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Column(
                     children: const [
                       CircularProgressIndicator(),
-                      Text("Sabar itu sebagian dari iman >_<")
+                      Text(
+                          "Tenang aja, data sedang dikirim\npastikan internet kamu tersambung")
                     ],
+                  );
+                }
+                if (listResto.isEmpty) {
+                  return Container(
+                    padding: const EdgeInsets.all(20),
+                    child: const Center(
+                      child: Text(
+                        "Mohon maaf\nResto atau menu yang anda cari belum tersedia\nKamu bisa kosongkan text pencarian\nKemudian klik icon cari untuk melihat semua list resto ^_^",
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   );
                 }
                 return ListView.builder(

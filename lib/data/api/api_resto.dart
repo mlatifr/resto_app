@@ -12,7 +12,6 @@ class ApiService {
   Future<RestoListModel> getListRestoQuery(query) async {
     final response = await http
         .get(Uri.parse("https://restaurant-api.dicoding.dev/search?q=$query"));
-    print(response.body);
     RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
     return decodeRestoStatus;
   }
