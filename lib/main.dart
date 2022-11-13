@@ -1,13 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:resto_app/detail_resto.dart';
-import 'package:resto_app/restaurant.dart';
+import 'package:resto_app/data/model/restaurant.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
+  ApiService().getListResto();
+}
+
+class ApiService {
+  static const String _baseUrl = 'https://restaurant-api.dicoding.dev/list';
+  Future<RestoListModel> getListResto() async {
+    final response = await http.get(Uri.parse("${_baseUrl}"));
+    RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
+    return decodeRestoStatus;
+  }
 }
 
 class DetailRestoArguments {
-  final RestaurantModel? restoModel;
+  final RestoListModel? restoModel;
   final int index;
 
   DetailRestoArguments(this.restoModel, this.index);
@@ -26,12 +39,12 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(),
       initialRoute: MyHomePage.routeName,
-      routes: {DetailResto.routeName: (context) => const DetailResto()},
+      // routes: {DetailResto.routeName: (context) => const DetailResto()},
     );
   }
 }
 
-RestaurantModel? convertResto;
+RestoListModel? convertResto;
 
 class MyHomePage extends StatelessWidget {
   static const routeName = '/';
@@ -51,9 +64,8 @@ class MyHomePage extends StatelessWidget {
           children: [
             WidgetJudulHalaman(
                 screenWidth: screenWidth, screenHeight: screenHeight),
-            FutureBuilder<String>(
-              future: DefaultAssetBundle.of(context)
-                  .loadString('assets/local_restaurant.json'),
+            FutureBuilder<RestoListModel>(
+              future: ApiService().getListResto(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Column(
@@ -63,17 +75,16 @@ class MyHomePage extends StatelessWidget {
                     ],
                   );
                 }
-                convertResto = restaurantModelFromJson(snapshot.data);
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: convertResto!.restaurants.length,
+                  itemCount: snapshot.data!.restaurants.length,
                   itemBuilder: (context, index) {
                     return WidgetCardFood(
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
                       index: index,
-                      restoModel: convertResto,
+                      restoModel: snapshot.data,
                     );
                   },
                 );
@@ -116,7 +127,7 @@ class WidgetCardFood extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
   final int index;
-  final RestaurantModel? restoModel;
+  final RestoListModel? restoModel;
   const WidgetCardFood(
       {Key? key,
       required this.screenWidth,
@@ -129,8 +140,8 @@ class WidgetCardFood extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, DetailResto.routeName,
-            arguments: DetailRestoArguments(restoModel, index));
+        // Navigator.pushNamed(context, DetailResto.routeName,
+        //     arguments: DetailRestoArguments(restoModel, index));
       },
       child: Row(
         children: [
@@ -141,8 +152,8 @@ class WidgetCardFood extends StatelessWidget {
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(16)),
               child: Image.network(
-                "${restoModel?.restaurants[index].pictureId}",
-                fit: BoxFit.fill,
+                "https://restaurant-api.dicoding.dev/images/medium/${restoModel?.restaurants[index].pictureId}",
+                fit: BoxFit.cover,
               ),
             ),
           ),
