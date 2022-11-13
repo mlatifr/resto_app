@@ -1,22 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:resto_app/detail_resto.dart';
 import 'package:resto_app/data/model/restaurant.dart';
-import 'package:http/http.dart' as http;
+
+import 'data/api/api_resto.dart';
 
 void main() {
   runApp(const MyApp());
-  ApiService().getListResto();
-}
-
-class ApiService {
-  static const String _baseUrl = 'https://restaurant-api.dicoding.dev/list';
-  Future<RestoListModel> getListResto() async {
-    final response = await http.get(Uri.parse("${_baseUrl}"));
-    RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
-    return decodeRestoStatus;
-  }
 }
 
 class DetailRestoArguments {
@@ -33,6 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Resto App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -44,11 +33,34 @@ class MyApp extends StatelessWidget {
   }
 }
 
-RestoListModel? convertResto;
-
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   static const routeName = '/';
   const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController _cariRestoTextController =
+      TextEditingController();
+  List<Restaurant> listResto = [];
+  @override
+  void dispose() {
+    _cariRestoTextController.dispose();
+    super.dispose();
+  }
+
+  late Future<RestoListModel> _futureResto;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureResto = ApiService().getListResto().then((value) {
+      listResto = value.restaurants;
+      return value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,27 +76,56 @@ class MyHomePage extends StatelessWidget {
           children: [
             WidgetJudulHalaman(
                 screenWidth: screenWidth, screenHeight: screenHeight),
+            Container(
+              color: Colors.blueAccent,
+              width: screenWidth,
+              height: screenHeight * .07,
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                children: [
+                  Flexible(
+                      child: TextField(
+                    controller: _cariRestoTextController,
+                    decoration: InputDecoration(
+                        hintText: "Cari Resto",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15))),
+                  )),
+                  SizedBox(
+                    width: screenWidth * .05,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        // print("${_cariRestoTextController.text}");
+                        ApiService()
+                            .getListRestoQuery(_cariRestoTextController.text)
+                            .then((value) => print(value.restaurants[0].name));
+                      },
+                      child: const Icon(Icons.search))
+                ],
+              ),
+            ),
             FutureBuilder<RestoListModel>(
-              future: ApiService().getListResto(),
+              future: _futureResto,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Column(
                     children: const [
                       CircularProgressIndicator(),
-                      Text("Sabar itu sebagian dari iman >,<")
+                      Text("Sabar itu sebagian dari iman >_<")
                     ],
                   );
                 }
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: snapshot.data!.restaurants.length,
+                  itemCount: listResto.length,
                   itemBuilder: (context, index) {
                     return WidgetCardFood(
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
                       index: index,
-                      restoModel: snapshot.data,
+                      resto: listResto[index],
                     );
                   },
                 );
@@ -127,13 +168,13 @@ class WidgetCardFood extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
   final int index;
-  final RestoListModel? restoModel;
+  final Restaurant? resto;
   const WidgetCardFood(
       {Key? key,
       required this.screenWidth,
       required this.screenHeight,
       required this.index,
-      required this.restoModel})
+      required this.resto})
       : super(key: key);
 
   @override
@@ -152,7 +193,7 @@ class WidgetCardFood extends StatelessWidget {
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(16)),
               child: Image.network(
-                "https://restaurant-api.dicoding.dev/images/medium/${restoModel?.restaurants[index].pictureId}",
+                "https://restaurant-api.dicoding.dev/images/medium/${resto!.pictureId}",
                 fit: BoxFit.cover,
               ),
             ),
@@ -171,7 +212,7 @@ class WidgetCardFood extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${restoModel?.restaurants[index].name}",
+                      resto!.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -190,7 +231,7 @@ class WidgetCardFood extends StatelessWidget {
                             Icons.location_pin,
                           ),
                           Text(
-                            "${restoModel?.restaurants[index].city}",
+                            resto!.city,
                           )
                         ],
                       )),
@@ -206,7 +247,7 @@ class WidgetCardFood extends StatelessWidget {
                             Icons.star_rounded,
                           ),
                           Text(
-                            "${restoModel?.restaurants[index].rating}",
+                            "${resto!.rating}",
                           )
                         ],
                       )),
