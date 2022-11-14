@@ -172,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       padding: const EdgeInsets.all(20),
                       child: const Center(
                         child: Text(
-                          "Mohon maaf\nResto atau menu yang anda cari belum tersedia\n1. Pastikan koneksi internetmu aman\n2.Kamu bisa kosongkan text pencarian\n3.Kemudian klik icon cari untuk melihat semua list resto ^_^",
+                          "Mohon maaf\nResto atau menu yang anda cari belum tersedia\n1. Pastikan koneksi internetmu aman\n2. Setelah itu kamu bisa kosongkan text pencarian\n3. Kemudian klik icon cari untuk melihat semua list resto ^_^",
                           textAlign: TextAlign.justify,
                         ),
                       ),
@@ -211,7 +211,7 @@ class WidgetLoading extends StatelessWidget {
       children: const [
         CircularProgressIndicator(),
         Text(
-            "Tenang aja, data sedang dikirim\npastikan internet kamu tersambung")
+            "Tenang aja, kami sedang memproses pencarianmu\nPermintaanmu kamu sedang kamu proses")
       ],
     );
   }
