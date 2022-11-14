@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:resto_app/data/model/restaurant.dart';
-
-import 'data/api/api_resto.dart';
+import 'package:resto_app/getx/list_resto_getx.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Resto App',
       theme: ThemeData(
@@ -28,7 +28,6 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(),
       initialRoute: MyHomePage.routeName,
-      // routes: {DetailResto.routeName: (context) => const DetailResto()},
     );
   }
 }
@@ -44,157 +43,164 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _cariRestoTextController =
       TextEditingController();
-  List<Restaurant> listResto = [];
+
   @override
   void dispose() {
     _cariRestoTextController.dispose();
     super.dispose();
   }
 
-  late Future<RestoListModel> _futureResto;
+  // late Future<RestoListModel> _futureResto;
 
-  @override
-  void initState() {
-    super.initState();
-    _futureResto = ApiService().getListResto().then((value) {
-      listResto = value.restaurants;
-      if (value.toString().contains("Failed")) {
-        listResto.clear();
-      }
-      return value;
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _futureResto = ApiService().getListResto().then((value) {
+  //     listResto = value.restaurants;
+  //     if (value.toString().contains("Failed")) {
+  //       listResto.clear();
+  //     }
+  //     return value;
+  //   });
+  // }
 
-  bool isLoading = false;
-  setIsLoading(bool status) {
-    if (status) {
-      setState(() {
-        isLoading = true;
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
+  // setIsLoading(bool status) {
+  //   if (status) {
+  //     setState(() {
+  //       isLoading = true;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
-
+    final RestoController restoController = Get.put(RestoController());
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Home Page Resto"),
         ),
-        body: ListView(
-          shrinkWrap: true,
-          children: [
-            WidgetJudulHalaman(
-                screenWidth: screenWidth, screenHeight: screenHeight),
-            const Divider(),
-            Container(
-              // color: Colors.blueAccent,
-              width: screenWidth,
-              height: screenHeight * .07,
-              padding: const EdgeInsets.all(5),
-              child: Row(
-                children: [
-                  Flexible(
-                      child: TextField(
-                    controller: _cariRestoTextController,
-                    decoration: InputDecoration(
-                        hintText: "Cari Resto atau Menu",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15))),
-                  )),
-                  SizedBox(
-                    width: screenWidth * .05,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        setIsLoading(true);
-                        if (_cariRestoTextController.text.isEmpty) {
-                          ApiService().getListResto().then((value) {
-                            setIsLoading(false);
-                            try {
-                              setState(() {
-                                if (value.toString().contains("Failed")) {
-                                  listResto.clear();
-                                } else {
-                                  listResto = value.restaurants;
-                                }
-                              });
-                            } catch (e) {
-                              return e;
-                            }
-                          });
-                        } else {
-                          ApiService()
-                              .getListRestoQuery(_cariRestoTextController.text)
-                              .then((value) {
-                            setIsLoading(false);
-                            try {
-                              setState(() {
-                                if (value.restaurants.isEmpty ||
-                                    value.toString().contains("Failed")) {
-                                  listResto.clear();
-                                } else {
-                                  listResto = value.restaurants;
-                                }
-                              });
-                            } catch (e) {
-                              return e;
-                            }
-                          });
-                        }
-                      },
-                      child: const Icon(Icons.search))
-                ],
+        body: Obx(() {
+          return ListView(
+            shrinkWrap: true,
+            children: [
+              WidgetJudulHalaman(
+                  screenWidth: screenWidth, screenHeight: screenHeight),
+              const Divider(),
+              //Kolom pencarian
+              Container(
+                width: screenWidth,
+                height: screenHeight * .07,
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Flexible(
+                        child: TextField(
+                      controller: _cariRestoTextController,
+                      decoration: InputDecoration(
+                          hintText: "Cari Resto atau Menu",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15))),
+                    )),
+                    SizedBox(
+                      width: screenWidth * .05,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          // setIsLoading(true);
+                          restoController.isLoading(true);
+                          if (_cariRestoTextController.text.isEmpty) {
+                            // ApiService().getListResto().then((value) {
+                            //   setIsLoading(false);
+                            //   try {
+                            //     setState(() {
+                            //       if (value.toString().contains("Failed")) {
+                            //         listResto.clear();
+                            //       } else {
+                            //         listResto = value.restaurants;
+                            //       }
+                            //     });
+                            //   } catch (e) {
+                            //     return e;
+                            //   }
+                            // });
+                            restoController.onInit();
+                          } else {
+                            // ApiService()
+                            //     .getListRestoQuery(
+                            //         _cariRestoTextController.text)
+                            //     .then((value) {
+                            //   setIsLoading(false);
+                            //   try {
+                            //     setState(() {
+                            //       if (value.restaurants.isEmpty ||
+                            //           value.toString().contains("Failed")) {
+                            //         listResto.clear();
+                            //       } else {
+                            //         listResto = value.restaurants;
+                            //       }
+                            //     });
+                            //   } catch (e) {
+                            //     return e;
+                            //   }
+                            // });
+                            restoController.getListRestoQuery(
+                                _cariRestoTextController.text);
+                          }
+                        },
+                        child: const Icon(Icons.search))
+                  ],
+                ),
               ),
-            ),
-            const Divider(),
-            if (isLoading) const WidgetLoading(),
-            if (isLoading == false)
-              FutureBuilder<RestoListModel>(
-                future: _futureResto,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      isLoading == true) {
-                    return const WidgetLoading();
-                  }
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    isLoading = false;
-                  }
-                  if (listResto.isEmpty) {
-                    return Container(
-                      padding: const EdgeInsets.all(20),
-                      child: const Center(
-                        child: Text(
-                          "Mohon maaf\nResto atau menu yang anda cari belum tersedia\n1. Pastikan koneksi internetmu aman\n2. Setelah itu kamu bisa kosongkan text pencarian\n3. Kemudian klik icon cari untuk melihat semua list resto ^_^",
-                          textAlign: TextAlign.justify,
+              const Divider(),
+              if (restoController.isLoading.isTrue) const WidgetLoading(),
+              //Card list resto
+              if (restoController.isLoading.isFalse)
+                FutureBuilder(
+                  // future: restoController.getListResto(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        restoController.isLoading.isTrue) {
+                      return const WidgetLoading();
+                    }
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      restoController.isLoading(false);
+                    }
+                    if (restoController.listResto.isEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(20),
+                        child: const Center(
+                          child: Text(
+                            "Mohon maaf\nResto atau menu yang anda cari belum tersedia\n1. Pastikan koneksi internetmu aman\n2. Setelah itu kamu bisa kosongkan text pencarian\n3. Kemudian klik icon cari untuk melihat semua list resto ^_^",
+                            textAlign: TextAlign.justify,
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: listResto.length,
-                    itemBuilder: (context, index) {
-                      return WidgetCardFood(
-                        screenWidth: screenWidth,
-                        screenHeight: screenHeight,
-                        index: index,
-                        resto: listResto[index],
                       );
-                    },
-                  );
-                },
-              ),
-          ],
-        ),
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: restoController.listResto.length,
+                      itemBuilder: (context, index) {
+                        return WidgetCardFood(
+                          screenWidth: screenWidth,
+                          screenHeight: screenHeight,
+                          index: index,
+                          resto: restoController.listResto[index],
+                        );
+                      },
+                    );
+                  },
+                ),
+            ],
+          );
+        }),
       ),
     );
   }
