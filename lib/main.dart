@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resto_app/data/model/restaurant.dart';
-import 'package:resto_app/getx/list_resto_getx.dart';
+import 'package:resto_app/detail_resto.dart';
+import 'package:resto_app/getx/list_resto_controller.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class DetailRestoArguments {
-  final RestoListModel? restoModel;
   final int index;
 
-  DetailRestoArguments(this.restoModel, this.index);
+  DetailRestoArguments(this.index);
 }
 
 class MyApp extends StatelessWidget {
@@ -78,8 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = Get.width;
+    var screenHeight = Get.height;
     final RestoController restoController = Get.put(RestoController());
     return SafeArea(
       child: Scaffold(
@@ -254,20 +254,22 @@ class WidgetCardFood extends StatelessWidget {
   final double screenHeight;
   final int index;
   final Restaurant? resto;
-  const WidgetCardFood(
-      {Key? key,
-      required this.screenWidth,
-      required this.screenHeight,
-      required this.index,
-      required this.resto})
-      : super(key: key);
+  const WidgetCardFood({
+    Key? key,
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.index,
+    required this.resto,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         // Navigator.pushNamed(context, DetailResto.routeName,
-        //     arguments: DetailRestoArguments(restoModel, index));
+        //     arguments: DetailRestoArguments(, index));
+        Get.to(() => const DetailResto(),
+            arguments: DetailRestoArguments(index));
       },
       child: Row(
         children: [

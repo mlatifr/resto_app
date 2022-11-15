@@ -7,7 +7,6 @@ class RestoController extends GetxController {
   var isLoading = false.obs;
   @override
   void onInit() {
-    // TODO: implement onInit
     getListResto();
     super.onInit();
   }
@@ -16,12 +15,11 @@ class RestoController extends GetxController {
     listResto.clear();
     isLoading(true);
     try {
-      const String _baseUrl = 'https://restaurant-api.dicoding.dev/list';
-      final response = await http.get(Uri.parse(_baseUrl));
+      const String baseUrl = 'https://restaurant-api.dicoding.dev/list';
+      final response = await http.get(Uri.parse(baseUrl));
       isLoading(false);
       RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
       listResto.value = decodeRestoStatus.restaurants.toList();
-      print(listResto.length);
       return listResto;
     } catch (e) {
       isLoading(false);
