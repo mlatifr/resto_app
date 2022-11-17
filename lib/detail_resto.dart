@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resto_app/main.dart';
@@ -71,7 +70,7 @@ class _DetailRestoState extends State<DetailResto> {
         children: [
           Obx(
             () => Text(
-              "${detailRestoController.detailResto().name}",
+              detailRestoController.detailResto().name,
               style: const TextStyle(fontSize: 22),
             ),
           ),
@@ -81,7 +80,7 @@ class _DetailRestoState extends State<DetailResto> {
               const Icon(Icons.location_on),
               Obx(
                 () => Text(
-                  "${detailRestoController.detailResto().city}",
+                  detailRestoController.detailResto().city,
                 ),
               )
             ],
@@ -100,7 +99,7 @@ class _DetailRestoState extends State<DetailResto> {
           const SizedBox(height: 2),
           Obx(
             () => Text(
-              "${detailRestoController.detailResto().description}",
+              detailRestoController.detailResto().description,
               maxLines: 5,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.justify,
@@ -129,8 +128,11 @@ class _DetailRestoState extends State<DetailResto> {
                           child: Container(
                             color: Colors.lightBlueAccent,
                             padding: const EdgeInsets.all(10),
-                            child: Text(
-                                "${detailRestoController.detailResto().menus.foods[index].name}"),
+                            child: Text(detailRestoController
+                                .detailResto()
+                                .menus
+                                .foods[index]
+                                .name),
                           ),
                         ),
                         const SizedBox(
@@ -164,8 +166,11 @@ class _DetailRestoState extends State<DetailResto> {
                           child: Container(
                             color: Colors.lightBlueAccent,
                             padding: const EdgeInsets.all(10),
-                            child: Text(
-                                "${detailRestoController.detailResto().menus.drinks[index].name}"),
+                            child: Text(detailRestoController
+                                .detailResto()
+                                .menus
+                                .drinks[index]
+                                .name),
                           ),
                         ),
                         const SizedBox(
