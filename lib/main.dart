@@ -10,8 +10,9 @@ void main() {
 
 class DetailRestoArguments {
   final int index;
-
-  DetailRestoArguments(this.index);
+  final String id;
+  final String pictureId;
+  DetailRestoArguments(this.index, this.id, this.pictureId);
 }
 
 class MyApp extends StatelessWidget {
@@ -50,32 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  // late Future<RestoListModel> _futureResto;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _futureResto = ApiService().getListResto().then((value) {
-  //     listResto = value.restaurants;
-  //     if (value.toString().contains("Failed")) {
-  //       listResto.clear();
-  //     }
-  //     return value;
-  //   });
-  // }
-
-  // setIsLoading(bool status) {
-  //   if (status) {
-  //     setState(() {
-  //       isLoading = true;
-  //     });
-  //   } else {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     var screenWidth = Get.width;
@@ -113,43 +88,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          // setIsLoading(true);
                           restoController.isLoading(true);
                           if (_cariRestoTextController.text.isEmpty) {
-                            // ApiService().getListResto().then((value) {
-                            //   setIsLoading(false);
-                            //   try {
-                            //     setState(() {
-                            //       if (value.toString().contains("Failed")) {
-                            //         listResto.clear();
-                            //       } else {
-                            //         listResto = value.restaurants;
-                            //       }
-                            //     });
-                            //   } catch (e) {
-                            //     return e;
-                            //   }
-                            // });
                             restoController.onInit();
                           } else {
-                            // ApiService()
-                            //     .getListRestoQuery(
-                            //         _cariRestoTextController.text)
-                            //     .then((value) {
-                            //   setIsLoading(false);
-                            //   try {
-                            //     setState(() {
-                            //       if (value.restaurants.isEmpty ||
-                            //           value.toString().contains("Failed")) {
-                            //         listResto.clear();
-                            //       } else {
-                            //         listResto = value.restaurants;
-                            //       }
-                            //     });
-                            //   } catch (e) {
-                            //     return e;
-                            //   }
-                            // });
                             restoController.getListRestoQuery(
                                 _cariRestoTextController.text);
                           }
@@ -163,7 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
               //Card list resto
               if (restoController.isLoading.isFalse)
                 FutureBuilder(
-                  // future: restoController.getListResto(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting ||
                         restoController.isLoading.isTrue) {
@@ -266,10 +207,9 @@ class WidgetCardFood extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.pushNamed(context, DetailResto.routeName,
-        //     arguments: DetailRestoArguments(, index));
         Get.to(() => const DetailResto(),
-            arguments: DetailRestoArguments(index));
+            arguments:
+                DetailRestoArguments(index, resto!.id, resto!.pictureId));
       },
       child: Row(
         children: [

@@ -1,28 +1,33 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resto_app/main.dart';
 import 'getx/detail_resto_controller.dart';
 
-class DetailResto extends StatelessWidget {
+class DetailResto extends StatefulWidget {
   static const routeName = '/detailResto';
-
   const DetailResto({
     super.key,
   });
+
+  @override
+  State<DetailResto> createState() => _DetailRestoState();
+}
+
+class _DetailRestoState extends State<DetailResto> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final DetailRestoController detailRestoController =
-        Get.put(DetailRestoController());
-    print(detailRestoController.detailResto().id);
     final args =
         ModalRoute.of(context)!.settings.arguments as DetailRestoArguments;
 
+    final DetailRestoController detailRestoController =
+        Get.put(DetailRestoController(id: args.id, onLoading: true));
     double screenHeight = Get.height;
-    // return Scaffold(
-    //   appBar: AppBar(),
-    //   // body: Obx(() =>
-    //   //     (Text("${detailRestoController.detailResto().menus.foods[0].name}"))),
-    // );
     return SafeArea(
         child: Scaffold(
             body: NestedScrollView(
@@ -42,14 +47,20 @@ class DetailResto extends StatelessWidget {
             ),
             expandedHeight: screenHeight * .25,
             flexibleSpace: Stack(children: [
-              Center(
-                  child: Obx((() => Text(
-                      "${detailRestoController.detailResto().pictureId}"))))
-              // Positioned.fill(
-              //     child: Image.network(
-              //   restoController.listResto[args.index].pictureId,
-              //   fit: BoxFit.cover,
-              // ))
+              Obx(
+                () {
+                  return Positioned.fill(
+                      child: detailRestoController.onLoading == false
+                          ? Image.network(
+                              "https://restaurant-api.dicoding.dev/images/large/${detailRestoController.detailResto().pictureId}",
+                              fit: BoxFit.cover,
+                            )
+                          : Center(
+                              child: Text(
+                                  "Loading Image Id:${detailRestoController.detailResto().pictureId}"),
+                            ));
+                },
+              )
             ]),
           ),
         ];

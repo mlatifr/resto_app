@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final detailRestoModel = detailRestoModelFromJson(jsonString);
-
 import 'dart:convert';
 
 DetailRestoModel detailRestoModelFromJson(String str) =>
