@@ -15,9 +15,14 @@ class DetailRestoArguments {
   DetailRestoArguments(this.index, this.id, this.pictureId);
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -53,139 +58,99 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = Get.width;
-    var screenHeight = Get.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
     final RestoController restoController = Get.put(RestoController());
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Home Page Resto"),
-        ),
-        body: Obx(() {
-          return ListView(
+          appBar: AppBar(
+            title: const Text("Home Page Resto"),
+          ),
+          body: ListView(
             shrinkWrap: true,
             children: [
-              WidgetJudulHalaman(
-                  screenWidth: screenWidth, screenHeight: screenHeight),
+              Obx(() => Text(restoController.listResto[0].id)),
+              GetBuilder<RestoController>(builder: (restoController) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: restoController.listResto.length,
+                  itemBuilder: (context, index) {
+                    return Obx(() => WidgetCardFood(
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight,
+                        index: index,
+                        resto: restoController.listResto[index]));
+                  },
+                );
+              }),
+              // WidgetJudulHalaman(
+              //     screenWidth: screenWidth, screenHeight: screenHeight),
               const Divider(),
               //Kolom pencarian
-              Container(
-                width: screenWidth,
-                height: screenHeight * .07,
-                padding: const EdgeInsets.all(5),
-                child: Row(
-                  children: [
-                    Flexible(
-                        child: TextField(
-                      controller: _cariRestoTextController,
-                      decoration: InputDecoration(
-                          hintText: "Cari Resto atau Menu",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                    )),
-                    SizedBox(
-                      width: screenWidth * .05,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          restoController.isLoading(true);
-                          if (_cariRestoTextController.text.isEmpty) {
-                            restoController.onInit();
-                          } else {
-                            restoController.getListRestoQuery(
-                                _cariRestoTextController.text);
-                          }
-                        },
-                        child: const Icon(Icons.search))
-                  ],
-                ),
-              ),
+              // WidgetSearch(
+              //     screenWidth: screenWidth,
+              //     screenHeight: screenHeight,
+              //     cariRestoTextController: _cariRestoTextController,
+              //     restoController: restoController),
               const Divider(),
-              if (restoController.isLoading.isTrue) const WidgetLoading(),
+              // if (restoController.isLoading.isTrue) const WidgetLoading(),
               //Card list resto
-              if (restoController.isLoading.isFalse)
-                FutureBuilder(
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting ||
-                        restoController.isLoading.isTrue) {
-                      return const WidgetLoading();
-                    }
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      restoController.isLoading(false);
-                    }
-                    if (restoController.listResto.isEmpty) {
-                      return Container(
-                        padding: const EdgeInsets.all(20),
-                        child: const Center(
-                          child: Text(
-                            "Mohon maaf\nResto atau menu yang anda cari belum tersedia\n1. Pastikan koneksi internetmu aman\n2. Setelah itu kamu bisa kosongkan text pencarian\n3. Kemudian klik icon cari untuk melihat semua list resto ^_^",
-                            textAlign: TextAlign.justify,
-                          ),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: restoController.listResto.length,
-                      itemBuilder: (context, index) {
-                        return WidgetCardFood(
-                          screenWidth: screenWidth,
-                          screenHeight: screenHeight,
-                          index: index,
-                          resto: restoController.listResto[index],
-                        );
-                      },
-                    );
-                  },
-                ),
+              // if (restoController.isLoading.isFalse)
+              //   ListView.builder(
+              //     shrinkWrap: true,
+              //     physics: const NeverScrollableScrollPhysics(),
+              //     itemCount: restoController.listResto.length,
+              //     itemBuilder: (context, index) {
+              //       return Obx(() => Text(restoController.listResto[index].id));
+              //       // return WidgetCardFood(
+              //       //   screenWidth: screenWidth,
+              //       //   screenHeight: screenHeight,
+              //       //   index: index,
+              //       //   resto: restoController.listResto[index],
+              //       // );
+              //     },
+              //   )
+              // FutureBuilder(
+              //   future: restoController.getListResto(),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.connectionState == ConnectionState.waiting ||
+              //         restoController.isLoading.isTrue) {
+              //       return const WidgetLoading();
+              //     }
+
+              //     if (restoController.listResto.isEmpty) {
+              //       return Container(
+              //         padding: const EdgeInsets.all(20),
+              //         child: const Center(
+              //           child: Text(
+              //             "Mohon maaf\nResto atau menu yang anda cari belum tersedia\n1. Pastikan koneksi internetmu aman\n2. Setelah itu kamu bisa kosongkan text pencarian\n3. Kemudian klik icon cari untuk melihat semua list resto ^_^",
+              //             textAlign: TextAlign.justify,
+              //           ),
+              //         ),
+              //       );
+              //     }
+              //     if (snapshot.connectionState == ConnectionState.done) {
+              //       restoController.isLoading(false);
+              //     }
+              //     return Obx(() => ListView.builder(
+              //           shrinkWrap: true,
+              //           physics: const NeverScrollableScrollPhysics(),
+              //           itemCount: restoController.listResto.length,
+              //           itemBuilder: (context, index) {
+              //             return Obx(() =>
+              //                 Text(restoController.listResto[index].id));
+              //             // return WidgetCardFood(
+              //             //   screenWidth: screenWidth,
+              //             //   screenHeight: screenHeight,
+              //             //   index: index,
+              //             //   resto: restoController.listResto[index],
+              //             // );
+              //           },
+              //         ));
+              //   },
+              // ),
             ],
-          );
-        }),
-      ),
-    );
-  }
-}
-
-class WidgetLoading extends StatelessWidget {
-  const WidgetLoading({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: const [
-        CircularProgressIndicator(),
-        Text(
-            "Tenang aja, kami sedang memproses pencarianmu\nPermintaanmu kamu sedang kamu proses")
-      ],
-    );
-  }
-}
-
-class WidgetJudulHalaman extends StatelessWidget {
-  const WidgetJudulHalaman({
-    Key? key,
-    required double screenWidth,
-    required double screenHeight,
-  })  : _screenWidth = screenWidth,
-        _screenHeight = screenHeight,
-        super(key: key);
-
-  final double _screenWidth;
-  final double _screenHeight;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: _screenWidth,
-      height: _screenHeight * .08,
-      child: const Center(
-          child: Text(
-        "Daftar rekomendasi restaurant",
-        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-      )),
+          )),
     );
   }
 }
@@ -284,6 +249,100 @@ class WidgetCardFood extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class WidgetSearch extends StatelessWidget {
+  const WidgetSearch({
+    Key? key,
+    required this.screenWidth,
+    required this.screenHeight,
+    required TextEditingController cariRestoTextController,
+    required this.restoController,
+  })  : _cariRestoTextController = cariRestoTextController,
+        super(key: key);
+
+  final double screenWidth;
+  final double screenHeight;
+  final TextEditingController _cariRestoTextController;
+  final RestoController restoController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: screenWidth,
+      height: screenHeight * .07,
+      padding: const EdgeInsets.all(5),
+      child: Row(
+        children: [
+          Flexible(
+              child: TextField(
+            controller: _cariRestoTextController,
+            decoration: InputDecoration(
+                hintText: "Cari Resto atau Menu",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15))),
+          )),
+          SizedBox(
+            width: screenWidth * .05,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                restoController.isLoading(true);
+                if (_cariRestoTextController.text.isEmpty) {
+                  restoController.onInit();
+                } else {
+                  restoController
+                      .getListRestoQuery(_cariRestoTextController.text);
+                }
+              },
+              child: const Icon(Icons.search))
+        ],
+      ),
+    );
+  }
+}
+
+class WidgetLoading extends StatelessWidget {
+  const WidgetLoading({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        CircularProgressIndicator(),
+        Text(
+            "Tenang aja, kami sedang memproses pencarianmu\nPermintaanmu kamu sedang kamu proses")
+      ],
+    );
+  }
+}
+
+class WidgetJudulHalaman extends StatelessWidget {
+  const WidgetJudulHalaman({
+    Key? key,
+    required double screenWidth,
+    required double screenHeight,
+  })  : _screenWidth = screenWidth,
+        _screenHeight = screenHeight,
+        super(key: key);
+
+  final double _screenWidth;
+  final double _screenHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _screenWidth,
+      height: _screenHeight * .08,
+      child: const Center(
+          child: Text(
+        "Daftar rekomendasi restaurant",
+        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+      )),
     );
   }
 }
