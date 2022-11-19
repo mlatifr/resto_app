@@ -122,7 +122,7 @@ class _DetailRestoState extends State<DetailResto> {
                         Obx(
                           () => Text(
                             detailRestoController.detailResto().description,
-                            maxLines: 5,
+                            maxLines: 100,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.justify,
                           ),
@@ -138,10 +138,11 @@ class _DetailRestoState extends State<DetailResto> {
                       if (detailRestoController.isLoading.isFalse &&
                           detailRestoController.haveConection.isTrue)
                         SizedBox(
-                            height: 35,
+                            height: MediaQuery.of(context).size.height * .121,
                             child: Obx(
                               () => ListView.builder(
                                 shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 itemCount: detailRestoController
                                     .detailResto()
@@ -183,10 +184,11 @@ class _DetailRestoState extends State<DetailResto> {
                       if (detailRestoController.isLoading.isFalse &&
                           detailRestoController.haveConection.isTrue)
                         SizedBox(
-                            height: 35,
+                            height: MediaQuery.of(context).size.height * .121,
                             child: Obx(
                               () => ListView.builder(
                                 shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 itemCount: detailRestoController
                                     .detailResto()

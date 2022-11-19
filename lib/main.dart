@@ -165,15 +165,13 @@ class WidgetCardFood extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  color: Colors.lightBlueAccent,
-                  width: screenWidth / 2,
-                  height: screenHeight * .0505,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
                     child: Text(
                       resto!.name,
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.w600),
@@ -190,8 +188,11 @@ class WidgetCardFood extends StatelessWidget {
                           const Icon(
                             Icons.location_pin,
                           ),
-                          Text(
-                            resto!.city,
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              resto!.city,
+                            ),
                           )
                         ],
                       )),
@@ -206,8 +207,11 @@ class WidgetCardFood extends StatelessWidget {
                           const Icon(
                             Icons.star_rounded,
                           ),
-                          Text(
-                            "${resto!.rating}",
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              "${resto!.rating}",
+                            ),
                           )
                         ],
                       )),
@@ -303,13 +307,12 @@ class WidgetJudulHalaman extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: _screenWidth,
-      height: _screenHeight * .08,
-      child: const Center(
+    return const FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Center(
           child: Text(
         "Daftar rekomendasi restaurant",
-        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+        style: TextStyle(fontWeight: FontWeight.w600),
       )),
     );
   }
