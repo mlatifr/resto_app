@@ -62,95 +62,63 @@ class _MyHomePageState extends State<MyHomePage> {
     var screenHeight = MediaQuery.of(context).size.height;
     final RestoController restoController = Get.put(RestoController());
     return SafeArea(
-      child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Home Page Resto"),
-          ),
-          body: ListView(
+        child: Scaffold(
+      appBar: AppBar(
+        title: const Text("Home Page Resto"),
+      ),
+      body: Obx(() => ListView(
             shrinkWrap: true,
             children: [
-              Obx(() => Text(restoController.listResto[0].id)),
-              GetBuilder<RestoController>(builder: (restoController) {
-                return ListView.builder(
+              if (restoController.isLoading.value) const WidgetLoading(),
+              if (!restoController.isLoading.value)
+                WidgetJudulHalaman(
+                    screenWidth: screenWidth, screenHeight: screenHeight),
+              if (!restoController.isLoading.value) const Divider(),
+              if (!restoController.isLoading.value)
+                //Kolom pencarian
+                WidgetSearch(
+                    screenWidth: screenWidth,
+                    screenHeight: screenHeight,
+                    cariRestoTextController: _cariRestoTextController,
+                    restoController: restoController),
+              if (!restoController.isLoading.value) const Divider(),
+              if (!restoController.haveConection.value &&
+                  !restoController.isLoading.value)
+                const WidgetNoInternetConnection(),
+              if (!restoController.isLoading.value &&
+                  restoController.haveConection.value)
+                ListView.builder(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: restoController.listResto.length,
                   itemBuilder: (context, index) {
-                    return Obx(() => WidgetCardFood(
+                    return (WidgetCardFood(
                         screenWidth: screenWidth,
                         screenHeight: screenHeight,
                         index: index,
                         resto: restoController.listResto[index]));
                   },
-                );
-              }),
-              // WidgetJudulHalaman(
-              //     screenWidth: screenWidth, screenHeight: screenHeight),
-              const Divider(),
-              //Kolom pencarian
-              // WidgetSearch(
-              //     screenWidth: screenWidth,
-              //     screenHeight: screenHeight,
-              //     cariRestoTextController: _cariRestoTextController,
-              //     restoController: restoController),
-              const Divider(),
-              // if (restoController.isLoading.isTrue) const WidgetLoading(),
-              //Card list resto
-              // if (restoController.isLoading.isFalse)
-              //   ListView.builder(
-              //     shrinkWrap: true,
-              //     physics: const NeverScrollableScrollPhysics(),
-              //     itemCount: restoController.listResto.length,
-              //     itemBuilder: (context, index) {
-              //       return Obx(() => Text(restoController.listResto[index].id));
-              //       // return WidgetCardFood(
-              //       //   screenWidth: screenWidth,
-              //       //   screenHeight: screenHeight,
-              //       //   index: index,
-              //       //   resto: restoController.listResto[index],
-              //       // );
-              //     },
-              //   )
-              // FutureBuilder(
-              //   future: restoController.getListResto(),
-              //   builder: (context, snapshot) {
-              //     if (snapshot.connectionState == ConnectionState.waiting ||
-              //         restoController.isLoading.isTrue) {
-              //       return const WidgetLoading();
-              //     }
-
-              //     if (restoController.listResto.isEmpty) {
-              //       return Container(
-              //         padding: const EdgeInsets.all(20),
-              //         child: const Center(
-              //           child: Text(
-              //             "Mohon maaf\nResto atau menu yang anda cari belum tersedia\n1. Pastikan koneksi internetmu aman\n2. Setelah itu kamu bisa kosongkan text pencarian\n3. Kemudian klik icon cari untuk melihat semua list resto ^_^",
-              //             textAlign: TextAlign.justify,
-              //           ),
-              //         ),
-              //       );
-              //     }
-              //     if (snapshot.connectionState == ConnectionState.done) {
-              //       restoController.isLoading(false);
-              //     }
-              //     return Obx(() => ListView.builder(
-              //           shrinkWrap: true,
-              //           physics: const NeverScrollableScrollPhysics(),
-              //           itemCount: restoController.listResto.length,
-              //           itemBuilder: (context, index) {
-              //             return Obx(() =>
-              //                 Text(restoController.listResto[index].id));
-              //             // return WidgetCardFood(
-              //             //   screenWidth: screenWidth,
-              //             //   screenHeight: screenHeight,
-              //             //   index: index,
-              //             //   resto: restoController.listResto[index],
-              //             // );
-              //           },
-              //         ));
-              //   },
-              // ),
+                )
             ],
           )),
+    ));
+  }
+}
+
+class WidgetNoInternetConnection extends StatelessWidget {
+  const WidgetNoInternetConnection({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(25),
+      child: const Text(
+        "Mohon maaf, koneksi internetmu sedang terganggu\n"
+        "Silahkan cek koneksimu",
+        textAlign: TextAlign.justify,
+      ),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 class RestoController extends GetxController {
   var listResto = <Restaurant>[].obs;
   var isLoading = false.obs;
+  var haveConection = true.obs;
   @override
   void onInit() {
     getListResto();
@@ -18,11 +19,13 @@ class RestoController extends GetxController {
       const String baseUrl = 'https://restaurant-api.dicoding.dev/list';
       final response = await http.get(Uri.parse(baseUrl));
       isLoading(false);
+      haveConection(true);
       RestoListModel decodeRestoStatus = restoModelFromJson(response.body);
       listResto.value = decodeRestoStatus.restaurants.toList();
       return listResto;
     } catch (e) {
       isLoading(false);
+      haveConection(false);
       return e;
     }
   }

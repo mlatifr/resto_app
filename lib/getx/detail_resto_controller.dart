@@ -5,24 +5,25 @@ import 'package:resto_app/data/model/detail_resto_model.dart';
 import 'package:http/http.dart' as http;
 
 class DetailRestoController extends GetxController with StateMixin {
-  var onLoading = true;
+  var isLoading = true.obs;
+  var haveConection = true.obs;
   final String id;
   var listCategories = <Category>[].obs;
   var listDrinks = <Category>[].obs;
   var listFoods = <Category>[].obs;
   var detailResto = RestaurantDetail(
-      id: "id",
-      name: "name",
-      description: "zzzdescription",
-      city: "city",
-      address: "address",
-      pictureId: "pictureId",
+      id: "no interner",
+      name: "no interner",
+      description: "no interner",
+      city: "no interner",
+      address: "no interner",
+      pictureId: "no interner",
       categories: [],
       menus: Menus(drinks: [], foods: []),
       rating: 1.1,
       customerReviews: []).obs;
 
-  DetailRestoController({required this.id, required this.onLoading});
+  DetailRestoController({required this.id});
 
   @override
   void onInit() {
@@ -31,13 +32,15 @@ class DetailRestoController extends GetxController with StateMixin {
   }
 
   Future getDetailResto(String id) async {
+    isLoading(true);
     try {
       String baseUrl = 'https://restaurant-api.dicoding.dev/detail/$id';
       final response = await http.get(Uri.parse(baseUrl));
       var result = jsonDecode(response.body);
       // print("result: $result");
       var resultDecode = DetailRestoModel.fromJson(result);
-
+      isLoading(false);
+      haveConection(true);
       detailResto.update((val) {
         val!.id = resultDecode.restaurant.id;
         val.name = resultDecode.restaurant.name;
@@ -51,9 +54,11 @@ class DetailRestoController extends GetxController with StateMixin {
         val.customerReviews = resultDecode.restaurant.customerReviews;
       });
       change(detailResto().pictureId, status: RxStatus.success());
-      onLoading = false;
+
       return detailResto;
     } catch (e) {
+      haveConection(false);
+      isLoading(false);
       return e;
     }
   }
