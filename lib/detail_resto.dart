@@ -79,9 +79,11 @@ class _DetailRestoState extends State<DetailResto> {
                     children: [
                       if (detailRestoController.isLoading.isTrue)
                         const WidgetLoading(),
-                      if (detailRestoController.haveConection.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isFalse)
                         const WidgetNoInternetConnection(),
-                      if (detailRestoController.isLoading.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isTrue)
                         Obx(
                           () => Text(
                             detailRestoController.detailResto().name,
@@ -89,7 +91,8 @@ class _DetailRestoState extends State<DetailResto> {
                           ),
                         ),
                       const SizedBox(height: 2),
-                      if (detailRestoController.isLoading.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isTrue)
                         Row(
                           children: [
                             const Icon(Icons.location_on),
@@ -101,7 +104,8 @@ class _DetailRestoState extends State<DetailResto> {
                           ],
                         ),
                       const SizedBox(height: 2),
-                      if (detailRestoController.isLoading.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isTrue)
                         Row(
                           children: [
                             const Icon(Icons.star),
@@ -113,7 +117,8 @@ class _DetailRestoState extends State<DetailResto> {
                           ],
                         ),
                       const SizedBox(height: 2),
-                      if (detailRestoController.isLoading.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isTrue)
                         Obx(
                           () => Text(
                             detailRestoController.detailResto().description,
@@ -123,13 +128,15 @@ class _DetailRestoState extends State<DetailResto> {
                           ),
                         ),
                       const SizedBox(height: 12),
-                      if (detailRestoController.isLoading.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isTrue)
                         const Text(
                           "Foods",
                           style: TextStyle(fontSize: 18),
                         ),
                       const SizedBox(height: 12),
-                      if (detailRestoController.isLoading.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isTrue)
                         SizedBox(
                             height: 35,
                             child: Obx(
@@ -166,13 +173,15 @@ class _DetailRestoState extends State<DetailResto> {
                               ),
                             )),
                       const SizedBox(height: 30),
-                      if (detailRestoController.isLoading.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isTrue)
                         const Text(
                           "Drinks",
                           style: TextStyle(fontSize: 18),
                         ),
                       const SizedBox(height: 12),
-                      if (detailRestoController.isLoading.isFalse)
+                      if (detailRestoController.isLoading.isFalse &&
+                          detailRestoController.haveConection.isTrue)
                         SizedBox(
                             height: 35,
                             child: Obx(
