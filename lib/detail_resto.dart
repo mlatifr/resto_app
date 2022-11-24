@@ -57,9 +57,14 @@ class _DetailRestoState extends State<DetailResto> {
                                       detailRestoController.isLoading.isFalse &&
                                               detailRestoController
                                                   .haveConection.isTrue
-                                          ? Image.network(
-                                              "https://restaurant-api.dicoding.dev/images/large/${detailRestoController.detailResto().pictureId}",
-                                              fit: BoxFit.cover,
+                                          ? Hero(
+                                              tag: detailRestoController
+                                                  .detailResto()
+                                                  .pictureId,
+                                              child: Image.network(
+                                                "https://restaurant-api.dicoding.dev/images/large/${detailRestoController.detailResto().pictureId}",
+                                                fit: BoxFit.cover,
+                                              ),
                                             )
                                           : const Center(
                                               child: Text(

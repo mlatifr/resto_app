@@ -144,82 +144,90 @@ class WidgetCardFood extends StatelessWidget {
             arguments:
                 DetailRestoArguments(index, resto!.id, resto!.pictureId));
       },
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(5),
-            width: screenWidth / 2,
-            height: screenHeight * .1517,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(16)),
-              child: Image.network(
-                "https://restaurant-api.dicoding.dev/images/medium/${resto!.pictureId}",
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            width: (screenWidth / 2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Text(
-                      resto!.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
+      child: Container(
+        color: Colors.transparent,
+        child: ClipRRect(
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                width: screenWidth / 2,
+                height: screenHeight * .1517,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                  child: Hero(
+                    tag: resto!.pictureId,
+                    child: Image.network(
+                      "https://restaurant-api.dicoding.dev/images/medium/${resto!.pictureId}",
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: screenWidth / 2,
-                  height: screenHeight * .0505,
-                  child: Align(
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: (screenWidth / 2),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
                       alignment: Alignment.centerLeft,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.location_pin,
-                          ),
-                          FittedBox(
-                            fit: BoxFit.fitWidth,
-                            child: Text(
-                              resto!.city,
-                            ),
-                          )
-                        ],
-                      )),
+                      child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          resto!.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: screenWidth / 2,
+                      height: screenHeight * .0505,
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.location_pin,
+                              ),
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  resto!.city,
+                                ),
+                              )
+                            ],
+                          )),
+                    ),
+                    SizedBox(
+                      width: screenWidth / 2,
+                      height: screenHeight * .0505,
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.star_rounded,
+                              ),
+                              FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  "${resto!.rating}",
+                                ),
+                              )
+                            ],
+                          )),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: screenWidth / 2,
-                  height: screenHeight * .0505,
-                  child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.star_rounded,
-                          ),
-                          FittedBox(
-                            fit: BoxFit.fitWidth,
-                            child: Text(
-                              "${resto!.rating}",
-                            ),
-                          )
-                        ],
-                      )),
-                ),
-              ],
-            ),
-          )
-        ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
