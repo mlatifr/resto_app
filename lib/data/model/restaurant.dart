@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final restoModel = restoModelFromJson(jsonString);
-
 import 'dart:convert';
 
 RestoListModel restoModelFromJson(String str) =>
@@ -35,12 +31,31 @@ class Restaurant {
     required this.rating,
   });
 
-  String id;
-  String name;
-  String description;
-  String pictureId;
-  String city;
-  double rating;
+  late String id;
+  late String name;
+  late String description;
+  late String pictureId;
+  late String city;
+  late double? rating;
+
+  Restaurant.fromMap(Map<String, dynamic> map) {
+    id = map['id'].toString();
+    name = map['name'];
+    description = map['description'];
+    pictureId = map['pictureId'];
+    city = map['city'];
+    rating = map['rating'];
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'pictureId': pictureId,
+      'city': city,
+      'rating': rating,
+    };
+  }
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
         id: json["id"],

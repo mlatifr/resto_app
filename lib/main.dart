@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
       home: const ListResto(),
       initialRoute: ListResto.routeName,
       routes: {
-        '/favoriteRestoList': (context) => const ListFavoriteResto(),
+        '/favoriteRestoList': (context) => ListFavoriteResto(),
       },
     );
   }
