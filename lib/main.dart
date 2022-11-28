@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:resto_app/data/model/restaurant.dart';
-import 'package:resto_app/detail_resto.dart';
 import 'package:resto_app/getx/list_resto_controller.dart';
+
+import 'ui/detail_resto.dart';
+import 'ui/list_favorite_resto.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,21 +34,24 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
-      initialRoute: MyHomePage.routeName,
+      home: const ListResto(),
+      initialRoute: ListResto.routeName,
+      routes: {
+        '/favoriteRestoList': (context) => const ListFavoriteResto(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class ListResto extends StatefulWidget {
   static const routeName = '/';
-  const MyHomePage({super.key});
+  const ListResto({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<ListResto> createState() => _ListRestoState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ListRestoState extends State<ListResto> {
   final TextEditingController _cariRestoTextController =
       TextEditingController();
 
@@ -65,6 +70,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scaffold(
       appBar: AppBar(
         title: const Text("Home Page Resto"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/favoriteRestoList');
+              },
+              icon: const Icon(Icons.favorite))
+        ],
       ),
       body: Obx(() => ListView(
             shrinkWrap: true,

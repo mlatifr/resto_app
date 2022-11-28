@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:resto_app/getx/detail_resto_controller.dart';
 import 'package:resto_app/main.dart';
-import 'getx/detail_resto_controller.dart';
 
 class DetailResto extends StatefulWidget {
   static const routeName = '/detailResto';
