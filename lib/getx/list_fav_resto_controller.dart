@@ -21,4 +21,8 @@ class RestoFavController extends GetxController {
     await _dbHelper.insertResto(resto);
     // _getAllNotes();
   }
+
+  Future<Restaurant> getRestoById(int id) async {
+    return await _dbHelper.getRestoById(id);
+  }
 }

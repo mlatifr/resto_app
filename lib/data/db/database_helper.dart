@@ -99,10 +99,10 @@ class DatabaseHelper {
     return results.map((res) => Restaurant.fromMap(res)).toList();
   }
 
-  Future<Restaurant> getNoteById(int id) async {
+  Future<Restaurant> getRestoById(int id) async {
     final Database db = await database;
     List<Map<String, dynamic>> results = await db.query(
-      _tableCategory,
+      _tableResto,
       where: 'id = ?',
       whereArgs: [id],
     );
