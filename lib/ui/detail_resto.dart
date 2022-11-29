@@ -36,17 +36,14 @@ class _DetailRestoState extends State<DetailResto> {
                       leading: ClipRRect(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(30)),
-                        child: Container(
-                          color: Colors.lightBlueAccent,
-                          child: IconButton(
-                            onPressed: (() => Navigator.pop(context)),
-                            icon: const Icon(Icons.arrow_back),
-                            color: Colors.white,
-                          ),
+                        child: IconButton(
+                          onPressed: (() => Navigator.pop(context)),
+                          icon: const Icon(Icons.arrow_back),
+                          color: Colors.white,
                         ),
                       ),
                       expandedHeight: screenHeight * .25,
-                      flexibleSpace: Stack(children: [
+                      flexibleSpace: Stack(clipBehavior: Clip.none, children: [
                         Obx(
                           () {
                             if (detailRestoController.isLoading.isTrue) {
@@ -72,6 +69,21 @@ class _DetailRestoState extends State<DetailResto> {
                                             ));
                             }
                           },
+                        ),
+                        Positioned(
+                          right: 5,
+                          bottom: -30,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(15),
+                                backgroundColor: Colors.white),
+                            child: const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            ),
+                          ),
                         )
                       ]),
                     ),
