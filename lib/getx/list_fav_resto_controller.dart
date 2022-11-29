@@ -22,7 +22,12 @@ class RestoFavController extends GetxController {
     // _getAllNotes();
   }
 
-  Future<Restaurant> getRestoById(int id) async {
-    return await _dbHelper.getRestoById(id);
+  Future getRestoById(id) async {
+    try {
+      await _dbHelper.getRestoById(id);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

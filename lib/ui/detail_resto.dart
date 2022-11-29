@@ -7,8 +7,10 @@ import 'package:resto_app/main.dart';
 
 class DetailResto extends StatefulWidget {
   static const routeName = '/detailResto';
+  final Restaurant? resto;
   const DetailResto({
     super.key,
+    this.resto,
   });
 
   @override
@@ -16,21 +18,24 @@ class DetailResto extends StatefulWidget {
 }
 
 class _DetailRestoState extends State<DetailResto> {
+  bool valueIcon = true;
   @override
   void initState() {
     super.initState();
+    cekListFavRestoById(widget.resto!.id);
   }
 
-  // final snackBar = SnackBar(
-  //     content: const Text('Yay! A SnackBar!'),
-  //     action: SnackBarAction(
-  //       label: 'Undo',
-  //       onPressed: () {
-  //         // Some code to undo the change.
-  //       },
-  //     ),
-  //   );
-  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  cekListFavRestoById(id) {
+    // rqdv5juczeskfw1e867
+    restoFavController.getRestoById("$id").then((value) {
+      print("value: $value");
+      setState(() {
+        valueIcon = value;
+      });
+      print("valueIcon: $valueIcon");
+    });
+  }
+
   buttonFavorite() {
     final snackBar = SnackBar(
       content: const Text('Yay! A SnackBar!'),
@@ -44,11 +49,11 @@ class _DetailRestoState extends State<DetailResto> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+  final RestoFavController restoFavController = RestoFavController();
   @override
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as DetailRestoArguments;
-    final RestoFavController restoFavController = RestoFavController();
     final DetailRestoController detailRestoController =
         Get.put(DetailRestoController(id: args.id));
     double screenHeight = Get.height;
@@ -128,16 +133,32 @@ class _DetailRestoState extends State<DetailResto> {
                                   rating: detailRestoController
                                       .detailResto()
                                       .rating);
-                              restoFavController.addFavoriteResto(_resto);
+
+                              // Restaurant findResto(id) {
+                              //   print("findResto $id");
+                              //   return restoFavController.listFavResto
+                              //       .firstWhere((resto) {
+                              //     return resto.id == id;
+                              //   });
+                              // }
+
+                              // findResto("rqdv5juczeskfw1e867");
+                              // restoFavController.addFavoriteResto(_resto);
                               // buttonFavorite();
                             },
                             style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),
                                 padding: const EdgeInsets.all(15),
                                 backgroundColor: Colors.white),
-                            child: const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.favorite,
+                                  color: valueIcon == false
+                                      ? Colors.grey
+                                      : Colors.red,
+                                )
+                              ],
                             ),
                           ),
                         )
@@ -317,4 +338,8 @@ class _DetailRestoState extends State<DetailResto> {
                   ),
                 ))));
   }
+
+  // restoFavController.getRestoById("rqdv5juczeskfw1e867").then((value) {
+  //   print(value);
+  // });
 }

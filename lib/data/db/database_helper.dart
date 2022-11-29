@@ -28,7 +28,7 @@ class DatabaseHelper {
         );
         await db.execute(
           '''CREATE TABLE $_tableResto (
-              id INT NOT NULL  ,
+              id VARCHAR(45) NOT NULL  ,
               name VARCHAR(45) NULL,
               description VARCHAR(45) NULL,
               pictureId VARCHAR(200) NULL,
@@ -58,7 +58,7 @@ class DatabaseHelper {
               customerReviews_name TEXT,
               customerReviews_review TEXT,
               customerReviews_date TEXT,
-              resto_id INT NOT NULL,
+              resto_id VARCHAR(45) NOT NULL,
               PRIMARY KEY (id),  
               FOREIGN KEY (resto_id) REFERENCES $_tableResto (id) ON DELETE NO ACTION ON UPDATE NO ACTION
           )
@@ -99,7 +99,7 @@ class DatabaseHelper {
     return results.map((res) => Restaurant.fromMap(res)).toList();
   }
 
-  Future<Restaurant> getRestoById(int id) async {
+  Future<Restaurant> getRestoById(String id) async {
     final Database db = await database;
     List<Map<String, dynamic>> results = await db.query(
       _tableResto,

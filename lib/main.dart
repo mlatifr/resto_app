@@ -152,7 +152,7 @@ class WidgetCardFood extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => const DetailResto(),
+        Get.to(() => DetailResto(resto: resto),
             arguments:
                 DetailRestoArguments(index, resto!.id, resto!.pictureId));
       },
