@@ -74,7 +74,19 @@ class _DetailRestoState extends State<DetailResto> {
                           right: 5,
                           bottom: -30,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              final snackBar = SnackBar(
+                                content: const Text('Yay! A SnackBar!'),
+                                action: SnackBarAction(
+                                  label: 'Undo',
+                                  onPressed: () {
+                                    // Some code to undo the change.
+                                  },
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            },
                             style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),
                                 padding: const EdgeInsets.all(15),
