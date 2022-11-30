@@ -37,7 +37,6 @@ class DatabaseHelper {
               PRIMARY KEY (id)
               )''',
         );
-        print("query 1");
         await db.execute(
           '''DROP TABLE IF EXISTS $_tableCategory''',
         );
@@ -62,19 +61,7 @@ class DatabaseHelper {
               PRIMARY KEY (id),  
               FOREIGN KEY (resto_id) REFERENCES $_tableResto (id) ON DELETE NO ACTION ON UPDATE NO ACTION
           )
-          '''
-            // '''CREATE TABLE $_tableCategory (
-            //       id INT NOT NULL,
-            //       jenis      TEXT CHECK( jenis IN ('makanan','minuman') )   NOT NULL DEFAULT 'makanan',
-            //       resto_id INT NOT NULL,
-            //       PRIMARY KEY (id),
-            //         FOREIGN KEY (resto_id)
-            //         REFERENCES $_tableResto (id)
-            //         ON DELETE NO ACTION
-            //         ON UPDATE NO ACTION
-            //   )''',
-            );
-        print("query 2");
+          ''');
       },
       version: 1,
     );
@@ -83,19 +70,13 @@ class DatabaseHelper {
   }
 
   Future<void> insertResto(Restaurant resto) async {
-    print('insertNote');
     final Database db = await database;
-    // await db.insert(_tableItem, note.toMap());
-    print(" helper insertResto");
     await db.insert(_tableResto, resto.toMap());
-    print("db.insert");
   }
 
   Future<List<Restaurant>> getRestos() async {
     final Database db = await database;
     List<Map<String, dynamic>> results = await db.query(_tableResto);
-    print("results:");
-    print("${results}");
     return results.map((res) => Restaurant.fromMap(res)).toList();
   }
 
@@ -121,11 +102,11 @@ class DatabaseHelper {
     );
   }
 
-  Future<void> deleteNote(int id) async {
+  Future<void> deleteResto(id) async {
     final db = await database;
 
     await db.delete(
-      _tableCategory,
+      _tableResto,
       where: 'id = ?',
       whereArgs: [id],
     );

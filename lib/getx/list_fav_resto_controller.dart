@@ -4,7 +4,7 @@ import 'package:resto_app/data/model/restaurant.dart';
 
 class RestoFavController extends GetxController {
   var listFavResto = <Restaurant>[].obs;
-  var isLoading = false.obs;
+  var valueIcon = true.obs;
   late DatabaseHelper _dbHelper;
   RestoFavController() {
     _dbHelper = DatabaseHelper();
@@ -12,14 +12,12 @@ class RestoFavController extends GetxController {
   }
 
   Future<void> getListFavResto() async {
-    print("_getAllNotes");
     listFavResto.value = await _dbHelper.getRestos();
-    // _getAllNotes();
   }
 
   Future<void> addFavoriteResto(Restaurant resto) async {
     await _dbHelper.insertResto(resto);
-    // _getAllNotes();
+    getListFavResto();
   }
 
   Future getRestoById(id) async {
@@ -29,5 +27,10 @@ class RestoFavController extends GetxController {
     } catch (e) {
       return false;
     }
+  }
+
+  Future deleteResto(id) async {
+    await _dbHelper.deleteResto(id);
+    getListFavResto();
   }
 }

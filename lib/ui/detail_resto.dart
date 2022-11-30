@@ -18,7 +18,6 @@ class DetailResto extends StatefulWidget {
 }
 
 class _DetailRestoState extends State<DetailResto> {
-  bool valueIcon = true;
   @override
   void initState() {
     super.initState();
@@ -26,26 +25,14 @@ class _DetailRestoState extends State<DetailResto> {
   }
 
   cekListFavRestoById(id) {
-    // rqdv5juczeskfw1e867
     restoFavController.getRestoById("$id").then((value) {
-      print("value: $value");
-      setState(() {
-        valueIcon = value;
-      });
-      print("valueIcon: $valueIcon");
+      restoFavController.valueIcon.value = value;
     });
   }
 
-  buttonFavorite() {
-    final snackBar = SnackBar(
-      content: const Text('Yay! A SnackBar!'),
-      action: SnackBarAction(
-        label: 'Undo',
-        onPressed: () {
-          // Some code to undo the change.
-        },
-      ),
-    );
+  snackbarFavorite(String msg) {
+    final snackBar =
+        SnackBar(content: Text(msg), duration: const Duration(seconds: 1));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -100,25 +87,13 @@ class _DetailRestoState extends State<DetailResto> {
                             }
                           },
                         ),
-                        // Positioned(
-                        //     right: 20,
-                        //     bottom: -30,
-                        //     child: GestureDetector(
-                        //       onTap: () {
-                        //         print("object");
-                        //       },
-                        //       child: Container(
-                        //         height: 100,
-                        //         width: 50,
-                        //         color: Colors.amberAccent,
-                        //       ),
-                        //     )),
                         Positioned(
                           right: 5,
                           bottom: -30,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Restaurant _resto = Restaurant(
+                            onPressed: () async {
+                              cekListFavRestoById(widget.resto!.id);
+                              Restaurant resto = Restaurant(
                                   id: detailRestoController.detailResto().id,
                                   name:
                                       detailRestoController.detailResto().name,
@@ -133,18 +108,17 @@ class _DetailRestoState extends State<DetailResto> {
                                   rating: detailRestoController
                                       .detailResto()
                                       .rating);
-
-                              // Restaurant findResto(id) {
-                              //   print("findResto $id");
-                              //   return restoFavController.listFavResto
-                              //       .firstWhere((resto) {
-                              //     return resto.id == id;
-                              //   });
-                              // }
-
-                              // findResto("rqdv5juczeskfw1e867");
-                              // restoFavController.addFavoriteResto(_resto);
-                              // buttonFavorite();
+                              if (restoFavController.valueIcon.value == false) {
+                                await restoFavController
+                                    .addFavoriteResto(resto);
+                                restoFavController.valueIcon.value = true;
+                                snackbarFavorite(
+                                    "${resto.name} added to favorite");
+                              } else {
+                                await restoFavController.deleteResto(resto.id);
+                                restoFavController.valueIcon.value = false;
+                                snackbarFavorite("${resto.name} deleted");
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),
@@ -152,11 +126,13 @@ class _DetailRestoState extends State<DetailResto> {
                                 backgroundColor: Colors.white),
                             child: Column(
                               children: [
-                                Icon(
-                                  Icons.favorite,
-                                  color: valueIcon == false
-                                      ? Colors.grey
-                                      : Colors.red,
+                                Obx(
+                                  () => Icon(
+                                    Icons.favorite,
+                                    color: restoFavController.valueIcon.isFalse
+                                        ? Colors.grey
+                                        : Colors.red,
+                                  ),
                                 )
                               ],
                             ),
@@ -328,8 +304,33 @@ class _DetailRestoState extends State<DetailResto> {
                           height: 30,
                           color: Colors.transparent,
                           child: GestureDetector(
-                            onTap: () {
-                              buttonFavorite();
+                            onTap: () async {
+                              Restaurant resto = Restaurant(
+                                  id: detailRestoController.detailResto().id,
+                                  name:
+                                      detailRestoController.detailResto().name,
+                                  description: detailRestoController
+                                      .detailResto()
+                                      .description,
+                                  pictureId: detailRestoController
+                                      .detailResto()
+                                      .pictureId,
+                                  city:
+                                      detailRestoController.detailResto().city,
+                                  rating: detailRestoController
+                                      .detailResto()
+                                      .rating);
+                              if (restoFavController.valueIcon.value == false) {
+                                await restoFavController
+                                    .addFavoriteResto(resto);
+                                restoFavController.valueIcon.value = true;
+                                snackbarFavorite(
+                                    "${resto.name} added to favorite");
+                              } else {
+                                await restoFavController.deleteResto(resto.id);
+                                restoFavController.valueIcon.value = false;
+                                snackbarFavorite("${resto.name} deleted");
+                              }
                             },
                           ),
                         ),
@@ -338,8 +339,4 @@ class _DetailRestoState extends State<DetailResto> {
                   ),
                 ))));
   }
-
-  // restoFavController.getRestoById("rqdv5juczeskfw1e867").then((value) {
-  //   print(value);
-  // });
 }

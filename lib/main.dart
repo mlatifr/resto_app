@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:resto_app/data/model/restaurant.dart';
 import 'package:resto_app/getx/list_resto_controller.dart';
 
+import 'getx/list_fav_resto_controller.dart';
 import 'ui/detail_resto.dart';
 import 'ui/list_favorite_resto.dart';
 
@@ -136,11 +137,13 @@ class WidgetNoInternetConnection extends StatelessWidget {
 }
 
 class WidgetCardFood extends StatelessWidget {
+  final RestoFavController _restoFavoriteController =
+      Get.put(RestoFavController());
   final double screenWidth;
   final double screenHeight;
   final int index;
   final Restaurant? resto;
-  const WidgetCardFood({
+  WidgetCardFood({
     Key? key,
     required this.screenWidth,
     required this.screenHeight,
@@ -151,10 +154,11 @@ class WidgetCardFood extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Get.to(() => DetailResto(resto: resto),
+      onTap: () async {
+        await Get.to(() => DetailResto(resto: resto),
             arguments:
                 DetailRestoArguments(index, resto!.id, resto!.pictureId));
+        _restoFavoriteController.getListFavResto();
       },
       child: Container(
         color: Colors.transparent,
@@ -318,12 +322,7 @@ class WidgetJudulHalaman extends StatelessWidget {
     Key? key,
     required double screenWidth,
     required double screenHeight,
-  })  : _screenWidth = screenWidth,
-        _screenHeight = screenHeight,
-        super(key: key);
-
-  final double _screenWidth;
-  final double _screenHeight;
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
